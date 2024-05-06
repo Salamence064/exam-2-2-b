@@ -139,10 +139,8 @@ void traceroute(char* dest) {
              * b. if ret > 0: data available, use recvfrom(...) to read data to recv_buf and process --> see TODO 5 below
              */
             if (ret == 0) {
-                if (++retry > MAX_RETRY) {
-                    printf("*\n");
-                    break;
-                }
+                printf("* ");
+                retry++;
             }
             else if (ret > 0) {
                 // TODO 4.b
@@ -176,6 +174,7 @@ void traceroute(char* dest) {
                     icmpheader* icmp1 = (icmpheader*)(recv_buf + sizeof(ipheader));
                     ipheader* ip2 = (ipheader*)(recv_buf + sizeof(ipheader) + sizeof(icmpheader));
                     icmpheader* icmp2 = (icmpheader*)(recv_buf + 2 * sizeof(ipheader) + sizeof(icmpheader));
+
                     if (icmp1->icmp_type == ICMP_TIME_EXCEEDED && icmp2->icmp_seq == ttl && icmp2->icmp_id == getpid()) {
                         printf("%s ", inet_ntoa(ip1->iph_sourceip));
                         ttl++;
@@ -186,10 +185,9 @@ void traceroute(char* dest) {
                         close(sockfd);
                         exit(0);
                     }
-               
-                // ----------------
-            }
-            else {
+                }
+
+            } else {
                 perror("select failed");
                 exit(-1);
             }
@@ -207,7 +205,7 @@ void traceroute(char* dest) {
         }
     }
     close(sockfd);
-}}
+}
 
 int main(int argc, char** argv) {
 
