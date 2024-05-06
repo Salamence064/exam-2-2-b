@@ -184,7 +184,15 @@ void traceroute(char* dest) {
                         printf("%s\n", inet_ntoa(ip1->iph_sourceip));
                         close(sockfd);
                         exit(0);
+
+                    } else {
+                        printf("* ");
+                        retry++;
                     }
+
+                } else {
+                    printf("* ");
+                    retry++;
                 }
 
             } else {
@@ -197,7 +205,7 @@ void traceroute(char* dest) {
              * Check if timed out for MAX_RETRY times; increment ttl to move on to processing next hop
              */
 
-            if (retry > MAX_RETRY) {
+            if (retry >= MAX_RETRY) {
                 printf("*\n");
                 ttl++;
                 break;
