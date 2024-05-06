@@ -124,6 +124,9 @@ void traceroute(char* dest) {
            
            
             // wait to check if there is data available to receive; need to retry if timeout: no need to change
+            timeval tv;
+            fd_set rfd;
+
             tv.tv_sec = 1;
             tv.tv_usec = 0;
             FD_ZERO(&rfd);
@@ -136,7 +139,7 @@ void traceroute(char* dest) {
              * b. if ret > 0: data available, use recvfrom(...) to read data to recv_buf and process --> see TODO 5 below
              */
             if (ret == 0) {
-                if (retry++ > MAX_RETRY) {
+                if (++retry > MAX_RETRY) {
                     printf("*\n");
                     break;
                 }
@@ -204,7 +207,7 @@ void traceroute(char* dest) {
         }
     }
     close(sockfd);
-}
+}}
 
 int main(int argc, char** argv) {
 
